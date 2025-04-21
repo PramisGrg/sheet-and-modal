@@ -3,7 +3,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "../../lib/utlis";
 
 const selectVariants = cva(
-  "flex w-full rounded-md border bg-white px-3 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
+  "flex w-full rounded-md border border-input bg-transparent p-3 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
   {
     variants: {
       variant: {
@@ -11,41 +11,25 @@ const selectVariants = cva(
         error: "border-red-500 focus:border-red-900 focus:ring-red-900",
         success: "border-green-500 focus:border-green-900 focus:ring-green-900",
       },
-      selectSize: {
-        default: "h-9 py-2",
-        sm: "h-8 text-xs py-1",
-        lg: "h-10 text-base py-2",
-      },
     },
     defaultVariants: {
       variant: "default",
-      selectSize: "default",
     },
   }
 );
 
-// ✅ Use Omit to avoid conflict with native HTML 'size'
 export interface SelectProps
-  extends Omit<React.SelectHTMLAttributes<HTMLSelectElement>, "size">,
+  extends React.SelectHTMLAttributes<HTMLSelectElement>,
     VariantProps<typeof selectVariants> {
-  label?: string;
-  error?: string;
   options?: Array<{ value: string; label: string }>;
   placeholder?: string;
+  error?: string;
+  label?: string;
 }
 
-export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
+const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
   (
-    {
-      className,
-      variant,
-      selectSize,
-      label,
-      error,
-      options = [],
-      placeholder,
-      ...props
-    },
+    { className, variant, options = [], placeholder, label, error, ...props },
     ref
   ) => {
     return (
@@ -55,28 +39,22 @@ export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
             {label}
           </label>
         )}
-
         <select
+          className={cn(selectVariants({ variant, className }))}
           ref={ref}
-          className={cn(selectVariants({ variant, selectSize, className }))}
           {...props}
         >
           {placeholder && (
-            <option
-              value=""
-              disabled
-              selected={!props.value && !props.defaultValue}
-            >
+            <option value="" disabled selected hidden>
               {placeholder}
             </option>
           )}
-          {options.map((opt) => (
-            <option key={opt.value} value={opt.value}>
-              {opt.label}
+          {options.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
             </option>
           ))}
         </select>
-
         {error && <p className="text-xs text-red-500">{error}</p>}
       </div>
     );
@@ -84,3 +62,5 @@ export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
 );
 
 Select.displayName = "Select";
+
+export { Select };

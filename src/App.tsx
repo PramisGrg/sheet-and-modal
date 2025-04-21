@@ -7,6 +7,7 @@ import Sheet from "./components/sheet/sheet";
 import { Button } from "./components/ui/button";
 import SelectExample from "./components/modal/select-item";
 import { Input } from "./components/ui/input";
+import { Label } from "./components/ui/label";
 
 function App() {
   const [modalOpen, setModalOpen] = useState(false);
@@ -47,7 +48,8 @@ function App() {
       <Button disabled>Click me</Button>
       <SelectExample />
       <div className="py-10">
-        <Input placeholder="Enter your name" />
+        <Label>Name</Label>
+        <Input placeholder="Enter your perso" />
       </div>
     </div>
   );
